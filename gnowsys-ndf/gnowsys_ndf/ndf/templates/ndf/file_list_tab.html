@@ -11,8 +11,8 @@
   <div class="row">
     <div class="small-12 columns">
       <p>{% trans "Search Results:" %} <span class="label alert">No {{title|lower}}{{resource_type.count|pluralize}} matched your search criteria!!!</span></p>
-    </div>  
-  </div>  
+    </div>
+  </div>
 {% endif %}
 
 
@@ -20,9 +20,9 @@
 <ul class="small-block-grid-1 medium-block-grid-3 large-block-grid-5" >
 
   <!-- Existing card list-->
-  {% for each_res in resource_type %}      
+  {% for each_res in resource_type %}
     <!-- #{#%# get_grid_fs_object each_res as grid_fs_obj %} -->
-    <li class="card-image-wrapper" > 
+    <li class="card-image-wrapper" >
     <!--old card-view > card.html &&  new card-view > simple_card.html  -->
     {% if notebook_filter %}
       {% include 'ndf/simple_card.html' with  has_contributor=True resource=each_res url_name='course_notebook_tab_note' first_arg=group_id second_arg="all-notes" third_arg=each_res.pk %}
@@ -45,7 +45,7 @@
         <div class='moderation'>
       {% else %}
         <div class='{% if each_res.status == "PUBLISHED" %}published{% endif %}'>
-      {% endif %} 
+      {% endif %}
 
       {% if "Pandora_video" in each_res.member_of_names_list %}
         <a href="{% url detail_urlname group_id each_res %}?vid_id={{src_id}}">
@@ -77,7 +77,7 @@
 	      -->
 	      {% endif %}
               <img src="{% url 'getFileThumbnail' group_id each_res.pk %}" alt="No thumbnail available!"/>
-             
+
             {% else %}
               <span class="fi-page-filled" style="font-size:40px"></span>
             {% endif %}
@@ -85,14 +85,14 @@
         </div>
         <hr/>
         <span style="font-size:12px;">{{ each_res.html_content|default_if_none:"Add some description."|safe|striptags|truncatechars:75 }}</span></br>
-        
+
         <footer>
           <div class="small-6 columns">{{each_res.mime_type|truncatechars:15}}</div>
           <div class="small-6 columns"><div class="right"><strong>{{each_res.file_size.size}}</strong> {{each_res.file_size.unit}}</div></div>
         </footer>
         <footer>
             <div class="age">
-              {{ each_res.member_of_names_list|join:', ' }}{% trans 'created' %} {{each_res.created_at|timesince}} {% trans 'ago' %} 
+              {{ each_res.member_of_names_list|join:', ' }}{% trans 'created' %} {{each_res.created_at|timesince}} {% trans 'ago' %}
               <br/>
             <span><strong>{{each_res.contributors|length}}</strong> {% trans 'Contributor' %}{{each_res.contributors|pluralize}} | </span>
               by <span class="user" href="{% url 'dashboard' each_res.created_by %}" data-gnow="">{{each_res.user_details_dict.created_by}}</span> &nbsp;&nbsp;&nbsp;
@@ -117,7 +117,7 @@
     </li>
     {% endcomment %}
 
-      <!-- end new -->      
+      <!-- end new -->
 
     {% empty %}
       {% if not searching %}
@@ -130,7 +130,7 @@
             {% else %}
               {% if not dont_show_error %}
                 {% if "CourseEventGroup" in node.member_of_names_list %}
-                <h5> 
+                <h5>
                   {% blocktrans %}No files have been uploaded yet.{% endblocktrans %}
                 </h5>
                 {% else %}
@@ -142,17 +142,17 @@
           </div>
         </div>
       {% endif %}
-      
+
   {% endfor %}
-  
+
 </ul>
 
 {% if title == "E-Library" %}
-  
+
   {% include 'ndf/pagination.html' with urlname="elib_paged_file_objs" first_arg=group_name_tag second_arg=filetype third_arg="" %}
 
   <div class="hide" data-educationaluse-stats='{{ educationaluse_stats }}'></div>
-  
+
 {% elif title == "eBooks" %}
 
     {% include 'ndf/pagination.html' with urlname="e-book_filter_page" first_arg=group_name_tag second_arg=""  third_arg="" page_info=page_info %}
@@ -179,6 +179,6 @@
       // fade: true,
       cssEase: 'linear'
     });
-    
+
   })
 </script>

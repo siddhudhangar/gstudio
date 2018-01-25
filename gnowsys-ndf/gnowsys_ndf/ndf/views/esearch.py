@@ -23,7 +23,8 @@ try:
 							+ GSTUDIO_ELASTIC_SEARCH_SUPERUSER_PASSWORD + '@' \
 							+ GSTUDIO_ELASTIC_SEARCH_ALIAS + ':' + \
 							GSTUDIO_ELASTIC_SEARCH_PORT
-	es = Elasticsearch([es_connection_string])
+	print es_connection_string
+	es = Elasticsearch([es_connection_string],timeout=100)
 except Exception as e:
 	pass
 
@@ -95,7 +96,7 @@ def get_search(request):
 				append_to_url = ""
 				select = "Author"
 
-				resultSet = search_query("nodes", select, group, query)
+				resultSet = search_query("gsystem", select, group, query)
 				hits =  "<h3> No of docs found: <b>%d</b></h3> " % len(resultSet)
 				med_list = get_search_results(resultSet)
 				if(group == "All"):
@@ -231,7 +232,7 @@ def get_search(request):
 									}
 
 
-				resultSet = search_query("nodes", select, group, query_body)
+				resultSet = search_query("gsystem", select, group, query_body)
 				hits = "<h3>No of docs found: <b>%d</b></h3>" % len(resultSet)
 				if(group=="All"):
 					res_list = ['<h3>Showing results for <b>%s</b> :</h3' % query_display, hits]
@@ -317,7 +318,7 @@ def get_suggestion(suggestion_body, queryInfo, doc_types, query, field):
 	and if query is also not indexed, then the flag remains 0. If we find a suggestion or if the query is indexed, the flag is set to 1.
 	'''
 	#print GSTUDIO_SITE_NAME
-	res = es.suggest(body=suggestion_body, index="nodes")						#first we search for suggestion in the name field as it has the highest priority
+	res = es.suggest(body=suggestion_body, index="gsystem")						#first we search for suggestion in the name field as it has the highest priority
 	#print(res)
 	if(len(res['suggest'][0]['options'])>0):									#if we get a suggestion means the phrase doesnt exist in the index
 		for sugitem in res['suggest'][0]['options']:
@@ -329,7 +330,7 @@ def get_suggestion(suggestion_body, queryInfo, doc_types, query, field):
 				break
 	else:						#should slop be included in the search part here?
 		query_body = {"query":{"match_phrase":{field: query,}}}
-		if(es.search(index="nodes", doc_type=doc_types, body=query_body)['hits']['total']>0):
+		if(es.search(index="gsystem", doc_type=doc_types, body=query_body)['hits']['total']>0):
 			queryInfo[0] = 1							#set queryNameInfo[0] = 1 when we found a suggestion or we found a hit in the indexed data
 			queryInfo[2] = query
 
@@ -387,7 +388,7 @@ def search_query(index_name, select, group, query):
 						"size": siz
 					} 
 
-	elif(index_name == "nodes"):
+	elif(index_name == "gsystem"):
 		doctype = select
 		body = query
 

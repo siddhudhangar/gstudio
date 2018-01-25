@@ -267,7 +267,7 @@
 				}
 			}
 		},
-		"NotMedia": {		
+		"notmedia": {		
 			"properties": {
 				"name": {
 					"type": "text",
@@ -440,8 +440,9 @@
 				}
 			}
 		},
-		"GAttribute": {
+		"gattribute": {
 			"properties": {
+               
 				"name": {
 					"type": "text",
 					"fields": {
@@ -462,5 +463,7 @@
 				}
 			}
 		}
+        
+
 	}
 }

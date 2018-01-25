@@ -23,8 +23,6 @@ es = Elasticsearch("http://elastic:changeme@gsearch:9200", timeout=100, retry_on
 #index = GSTUDIO_SITE_NAME.lower()
 #gsystemtype_index = "node_type_" + GSTUDIO_SITE_NAME.lower()
 
-
-
 page_id = 0
 
 
@@ -48,6 +46,7 @@ def index_docs(all_docs,index,doc_type):
         #print document
 
         if document["type"] == "GAttribute":
+
             es.index(index=index, doc_type="gattribute", id=document["id"], body=document)
             #file_name.write(document["id"] + '\n')
 
@@ -73,7 +72,8 @@ def index_docs(all_docs,index,doc_type):
             es.index(index=index, doc_type="gsystem", id=document["id"], body=document)
             #file_name.write(document["id"] + '\n')
             get_doc_type=get_document_type(document)
-            print(get_doc_type)
+            #print(get_doc_type)
+
             es.index(index="gsystem", doc_type=get_doc_type, id=document["id"], body=document)
 
         elif document["type"] == "Group":
@@ -125,8 +125,8 @@ def get_document_type(document):
 
 
 def main():
-    f = open("/data/nodes.txt", "w")
-    os.chmod("/data/nodes.txt", 0o777)
+    #f = open("/data/nodes.txt", "w")
+    #os.chmod("/data/nodes.txt", 0o777)
 
     nodes = {}
     triples = {}
@@ -144,9 +144,18 @@ def main():
 
         with open("/home/docker/code/gstudio/gnowsys-ndf/gnowsys_ndf/req_body.json") as req_body:
             request_body = json.load(req_body)
+        with open("/home/docker/code/gstudio/gnowsys-ndf/gnowsys_ndf/triples.json") as triples:
+            triples = json.load(triples)
+
+        if (not es.indices.exists("gsystem")):
+            res = es.indices.create(index="gsystem", body=request_body)
 
         if (not es.indices.exists(index.lower())):
-            res = es.indices.create(index=index.lower(), body=request_body)
+            if (index.lower() == "triples"):
+                res = es.indices.create(index=index.lower(), body=triples)
+            else:
+                res = es.indices.create(index=index.lower(), body=request_body)
+
 
         if (es.indices.exists(index.lower())):
 
@@ -170,7 +179,7 @@ def main():
                 nodes = node_collection.find({ '_id': {'$nin': temp} }).batch_size(5)
 
                 if(nodes.count() == 0):
-                    print("All "+ index.lower() +" documents have injected to elasticsearch")
+                    print("All "+ index.lower() +" documents has injected to elasticsearch")
                     continue
                 else:
                     index_docs(nodes, index.lower(), doc_type)
@@ -178,17 +187,27 @@ def main():
             elif (index.lower() == "triples"):
                 triples = triple_collection.find({ '_id': {'$nin': temp} }).batch_size(5)
                 if (triples.count() == 0):
-                    print("All " + index.lower() + " documents have injected to elasticsearch")
+                    print("All " + index.lower() + " documents has injected to elasticsearch")
                     continue
                 else:
                     # f = open("/data/triples.txt", "w")
                     # os.chmod("/data/triples.txt", 0o777)
                     index_docs(triples, index.lower(), doc_type)
 
+            elif (index.lower() == "filehives"):
+                filehive = filehive_collection.find({ '_id': {'$nin': temp} }).batch_size(5)
+                if (filehive.count() == 0):
+                    print("All " + index.lower() + " documents has injected to elasticsearch")
+                    continue
+                else:
+                    # f = open("/data/triples.txt", "w")
+                    # os.chmod("/data/triples.txt", 0o777)
+                    index_docs(filehive, index.lower(), doc_type)
+
             elif (index.lower() == "benchmarks"):
                 benchmarks = benchmark_collection.find({ '_id': {'$nin': temp} }).batch_size(5)
                 if (benchmarks.count() == 0):
-                    print("All " + index.lower() + " documents have injected to elasticsearch")
+                    print("All " + index.lower() + " documents has injected to elasticsearch")
                     continue
                 else:
                     index_docs(benchmarks, index.lower(), doc_type)
@@ -196,7 +215,7 @@ def main():
             elif (index.lower() == "filehives"):
                 filehives = filehive_collection.find({ '_id': {'$nin': temp} }).batch_size(5)
                 if (filehives.count() == 0):
-                    print("All " + index.lower() + " documents have injected to elasticsearch")
+                    print("All " + index.lower() + " documents has injected to elasticsearch")
                     continue
                 else:
                     index_docs(filehives, index.lower(), doc_type)
@@ -204,7 +223,7 @@ def main():
             elif (index.lower() == "buddies"):
                 buddys = buddy_collection.find({ '_id': {'$nin': temp} }).batch_size(5)
                 if (buddys.count() == 0):
-                    print("All " + index.lower() + " documents have injected to elasticsearch")
+                    print("All " + index.lower() + " documents has injected to elasticsearch")
                     continue
                 else:
                     index_docs(buddys, index.lower(), doc_type)
@@ -212,14 +231,14 @@ def main():
             elif (index.lower() == "counters"):
                 counters = counter_collection.find({ '_id': {'$nin': temp} }).batch_size(5)
                 if (counters.count() == 0):
-                    print("All " + index.lower() + " documents have injected to elasticsearch")
+                    print("All " + index.lower() + " documents has injected to elasticsearch")
                     continue
                 else:
                     index_docs(counters, index.lower(), doc_type)
 
 
-            print(res['_scroll_id'])
-            print(res['hits']['total'])
+            #print(res['_scroll_id'])
+            #print(res['hits']['total'])
 
                 #f = open("/data/nodes.txt", "w+")
                 #os.chmod("/data/nodes.txt", 0o777)
