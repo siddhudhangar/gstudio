@@ -3,11 +3,22 @@
 {% check_is_gstaff group_id request.user as is_gstaff %}
 {% get_download_filename node as download_filename %}
 {% get_group_object groupid as group_object %}
-<div class="row">
-  <div class="medium 12 columns">
-      <div class="left small-3 columns">
-            <h3>{% trans "File name:" %}<a href="{% url 'read_file' group_name_tag node download_filename %}" download="{{ download_filename }}"> {{node.name}} <i class="fa fa-download" aria-hidden="true"></i></a></h3>
-            <h5>{% trans "Created By:" %}{{ node.user_details_dict.contributors|join:', ' }} </h5>
+{% load es_tags %}
+<div id ="asset_content_detail" class="row">
+  <div  class="medium 12 columns">
+      <div style="margin-left:-40px;" class="left small-3 columns">
+        <ul >
+        {% asset_collection_list group_id second_arg as asset_clist %}
+          {% for each in asset_clist.grel_node %}
+            {% if node.pk == each.pk %}
+              <li style="color:red"><a id="{{each.pk}}" class="asset_content">{{each.name}}</a></li>
+            {% else %}
+              <li ><a  id="{{each.pk}}" class="asset_content" >{{each.name}}</a></li>
+            {% endif %}
+          {% endfor %}
+      </ul>
+<!--             <h3>{% trans "File name:" %}<a href="{% url 'read_file' group_name_tag node download_filename %}" download="{{ download_filename }}"> {{node.name}} <i class="fa fa-download" aria-hidden="true"></i></a></h3>
+            <h5>{% trans "Created By:" %}{{ node.user_details_dict.contributors|join:', ' }} </h5> -->
             <!--alternate file listing -->
            <div class="row">
               {% get_relation_node node.pk  'has_alt_content' as alt_lang_rel_node %}
@@ -52,10 +63,10 @@
               </div>
           {% if 'Page'  not in node.member_of_names_list %}
             <div class="small-12 medium-6 columns">
-                {% if node.created_by == request.user.id or is_gstaff  %}
+  <!--               {% if node.created_by == request.user.id or is_gstaff  %}
                   <span data-dropdown="assetcontent-settings-drop" aria-controls="assetcontent-settings-drop" aria-expanded="false" class="orange-button" style="margin-left:-10px;">
                      {% trans "Link/Add Related File" %}  <i class="fa fa-chevron-down"></i>
-                  </span>
+                  </span> -->
                   <ul id="assetcontent-settings-drop" class="f-dropdown" data-dropdown-content aria-hidden="true" tabindex="-1">
                     <li><a onclick="load_file_upload_modal(1)">{% trans "Add Alternate File" %}</a> </li>
                     {% if 'video' in node.if_file.mime_type or 'audio' in node.if_file.mime_type %}
@@ -72,7 +83,7 @@
             </div>
       </div>
       <div class="small-9 columns">
-            <div  {% if 'Page' in node.member_of_names_list %} class="preview_asset_page" {% else %} class="preview_asset" style="text-align:center;"{% endif %} > 
+            <div  {% if 'Page' in node.member_of_names_list %} class="preview_asset_page preview_asset_in_overlay" {% else %} class="preview_asset preview_asset_in_overlay" style="text-align:center;"{% endif %} >
            {% if title == "asset_content_detail" or title == "asset_gallery_detail" or title == "raw_material_detail"%}
 
             {% include "ndf/resource_view.html" with node=node %}
@@ -517,6 +528,25 @@ function delete_rel_files(sel_sub,rel_type){
         });
    }
 }
+$('.asset_content').click(function(){
+    var node_id = $(this).attr("id");
+    // console.log(node_id);
+    // console.log("#assetcontent-{{node.pk}}")
+    var url="/{{group_id}}/course/asset_detail/{{second_arg}}/asset_content/"+node_id
+        $.ajax({
+        type: "GET",
+        url:url,
+        datatype: "html",
+        success: function(data) {
+          // // console.log(data.asset_list)
+          var $response=$(data);
+          // console.log($response)
+          var activity_detail_page=$response.filter("div#gbase_wrap").find(".asset-content-detail");
+          $(".switch_asset_content").empty();
+          $(".switch_asset_content").append(activity_detail_page);
+        }
+        });
+});
 </script>
 
 

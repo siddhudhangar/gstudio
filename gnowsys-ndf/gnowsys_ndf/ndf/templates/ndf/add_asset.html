@@ -285,6 +285,7 @@
             {% for each in asset_content_list.grel_node %}
                 {% if  'DELETED' != each.status %}
                    {% include "ndf/asset_card.html" with url_name="assetcontent_detail" each_asset=each first_arg=group_id second_arg=asset_obj.pk third_arg=each.pk no_asset=True %}
+
                 {% endif %}
             {% endfor %}
         </div>
@@ -294,7 +295,7 @@
 
         <div class="asset-content-detail">
               {% if node %}
-               &nbsp; {% include "ndf/asset_content_detail.html" with node=node %}
+               &nbsp; {% include "ndf/asset_content_detail.html" with node=node second_arg=asset_obj.pk url_name="assetcontent_detail" %}
               {%  endif %}
         </div>
     <div class="row asset-comments-section">

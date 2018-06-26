@@ -21,16 +21,25 @@
 {% include 'ndf/widget_cross_publish.html' with node=activity_node %}
 
 {% if activity_node and not editor_view %}
+
     <div class="activity-detail-page">
         <div class="row">
             <div class="small-1 columns icon-widget" style="margin-top: 5.6px;">
-            <a href="{% url 'course_pages' group_id %}"><i class="fa fa-chevron-left large" aria-hidden="true"></i></a>
+            <!-- <a href="{% url 'course_pages' group_id %}"><i class="fa fa-chevron-left large" aria-hidden="true"></i></a> -->
             </div>
 
             <div class="small-8 columns">
                 <h4 class="page-name">{% firstof activity_node.altnames activity_node.name %}</h4>
             </div>
-              
+          <ul >
+              {% for each in all_pages %}
+                {% if activity_node.pk == each.pk %}
+                  <li style="color:red"><a id="{{each.pk}}" class="asset_content">{{each.name}}</a></li>
+                {% else %}
+                  <li ><a  id="{{each.pk}}" class="asset_content" >{{each.name}}</a></li>
+                {% endif %}
+              {% endfor %}
+          </ul>
             {% check_is_gstaff groupid request.user as is_gstaff %}
             {% if activity_node.created_by == request.user.id or is_gstaff %}
             <div class="small-3 columns right">
@@ -132,12 +141,14 @@
             {% for each in all_pages %}
 
                    {% include "ndf/asset_card.html" with url_name="view_course_page" each_asset=each first_arg=group_id second_arg=each.pk  no_asset=True if_activities=True %} 
+
             {% endfor %}
         </div>
 
 
 {% endif %}
 {% include 'ndf/pagination.html' with urlname="course_pages_paged" first_arg=group_id page_info=course_pages_info  %}
+
 {% endblock %}
 <script type="text/javascript">
     $(".delete-activity").click(function(){
@@ -326,4 +337,30 @@ $( document ).ready(function() {
         {% endif %}
     {% endfor %}
 });
+
+$('.asset_content').click(function(){
+    var node_id = $(this).attr("id");
+    // console.log("0000000000000000000000000000000000000");
+    // console.log(node_id);
+    // console.log("#assetcontent-{{node.pk}}")
+    var url="/{{group_id}}/course/activity/detail/"+node_id
+    // console.log(node_id)
+    // console.log(url);
+        $.ajax({
+        type: "GET",
+        url:url,
+        datatype: "html",
+        data:{'page_list':"true"},
+        success: function(data) {
+          // // console.log(data.asset_list)
+          var $response=$(data);
+          var html =$(data).html();
+          console.log(data)
+          var activity_detail_page=$response.filter("div#gbase_wrap").find(".activity-detail-page");
+          $(".switch_asset_content").empty();
+          $(".switch_asset_content").append(activity_detail_page);
+        }
+        });
+});
+
 </script>

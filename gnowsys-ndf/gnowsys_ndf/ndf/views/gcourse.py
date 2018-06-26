@@ -4085,6 +4085,7 @@ def course_pages(request, group_id, page_id=None,page_no=1):
 
 
     else:
+        # print "else....course_pages view"
         activity_gst_name, activity_gst_id = GSystemType.get_gst_name_id("activity")
         all_pages = node_collection.find({'member_of':
                     {'$in': [page_gst_id, activity_gst_id,interactive_page_gst_id] }, 'group_set': group_id,
@@ -4093,6 +4094,29 @@ def course_pages(request, group_id, page_id=None,page_no=1):
                     }).sort('last_update',-1)
         course_pages_info = paginator.Paginator(all_pages, page_no, GSTUDIO_NO_OF_OBJS_PP)
         context_variables.update({'editor_view': False, 'all_pages': all_pages,'course_pages_info':course_pages_info})
+    if request.GET.get("page_list",None):
+        activity_gst_name, activity_gst_id = GSystemType.get_gst_name_id("activity")
+        all_pages = node_collection.find({'member_of':
+                    {'$in': [page_gst_id, activity_gst_id,interactive_page_gst_id] }, 'group_set': group_id,
+                    'type_of': {'$ne': [blog_page_gst_id]}
+                    # 'content': {'$regex': 'clix-activity-styles.css', '$options': 'i'}
+                    }).sort('last_update',-1)
+        context_variables.update({'all_pages': all_pages})
+        node_obj = node_collection.one({'_id': ObjectId(page_id)})
+
+        rt_translation_of = Node.get_name_id_from_type('translation_of', 'RelationType', get_obj=True)
+
+        other_translations_grels = triple_collection.find({
+                            '_type': u'GRelation',
+                            'subject': ObjectId(page_id),
+                            'relation_type': rt_translation_of._id,
+                            'right_subject': {'$nin': [node_obj._id]}
+                        })
+        other_translations = node_collection.find({'_id': {'$in': [r.right_subject for r in other_translations_grels]} })
+
+        context_variables.update({'activity_node': node_obj, 'hide_breadcrumbs': True,'other_translations':other_translations})
+        context_variables.update({'editor_view': False})
+    # print context_variables
     return render_to_response(template,
                                 context_variables,
                                 context_instance = RequestContext(request)

@@ -6,7 +6,7 @@ from gnowsys_ndf.ndf.views.methods import *
 from django.template import Library
 from django.template import RequestContext,loader
 from django.shortcuts import render_to_response, render
-
+from gnowsys_ndf.ndf.templatetags.ndf_tags import get_relation_value
 
 register = Library()
 
@@ -281,3 +281,19 @@ def each_file_download_count(url,group_name_tag,node,download_filename):
 		print len(temp_list)
 		return "ERROR"
 	return temp_list
+
+@get_execution_time
+@register.assignment_tag
+def asset_collection_list(group_id,asset_id):
+
+	try:
+	    group_id = ObjectId(group_id)
+	except:
+	    group_name, group_id = get_group_name_id(group_id)
+	if asset_id:
+		asset_obj = node_collection.one({'_id': ObjectId(asset_id)})
+		asset_content_list = get_relation_value(ObjectId(asset_obj._id),'has_assetcontent')
+		print asset_content_list
+
+		return asset_content_list
+	return ""
