@@ -2016,10 +2016,10 @@ def course_resource_detail(request, group_id, course_sub_section, course_unit, r
 
     return render_to_response(template, variable)
 
-@auto_enroll
-@get_execution_time
+#@auto_enroll
+#@get_execution_time
 def activity_player_detail(request, group_id, lesson_id, activity_id):
-
+    print("activity_player_detail fuction called")
     group_obj   = get_group_name_id(group_id, get_obj=True)
     group_id    = group_obj._id
     group_name  = group_obj.name
@@ -2028,7 +2028,7 @@ def activity_player_detail(request, group_id, lesson_id, activity_id):
     all_lessons = len(unit_structure)
     lesson_list = []
     lesson_list_id = []
-    
+    print("get_unit_hierarchy")
     # trans_lesson_list = get_trans_node_list(group_obj.collection_set)
     
     for each in group_obj.collection_set:
@@ -2051,7 +2051,7 @@ def activity_player_detail(request, group_id, lesson_id, activity_id):
         lesson_name  = lesson_node.name
     # all metadata reg position and next prev of resource
     translation_obj = node_obj.get_relation('translation_of')
-
+    print("translation_obj")
     resource_index = resource_next_id = resource_prev_id = None
     lesson_index = lesson_next_id = lesson_prev_id = None
     resource_count = len(lesson_obj_collection_set)
@@ -2115,7 +2115,7 @@ def activity_player_detail(request, group_id, lesson_id, activity_id):
         context_variables.update({ 'next_lesson_id':next_lesson_obj._id,'lesson_next_act_id': next_lesson_obj.collection_set[0] })
     
     
-    if request.user.is_authenticated():
+    if False and request.user.is_authenticated():
         active_user_ids_list = [request.user.id]
         if GSTUDIO_BUDDY_LOGIN:
             active_user_ids_list += Buddy.get_buddy_userids_list_within_datetime(request.user.id, datetime.datetime.now())

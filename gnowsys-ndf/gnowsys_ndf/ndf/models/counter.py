@@ -465,7 +465,7 @@ class Counter(DjangoDocument):
 
         super(Counter, self).save(*args, **kwargs)
 
-        self.rcs_function(self,is_new,*args,**kwargs)
+        #self.rcs_function(self,is_new,*args,**kwargs)
 
     #@task
     def rcs_function(self,is_new,*args,**kwargs):

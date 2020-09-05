@@ -3171,7 +3171,8 @@ def get_filters_data(gst_name, group_name_or_id='home'):
                     "educationallevel": GSTUDIO_RESOURCES_EDUCATIONAL_LEVEL,
                     # "curricular": GSTUDIO_RESOURCES_CURRICULAR,
                     "audience": GSTUDIO_RESOURCES_AUDIENCE,
-                    # "textcomplexity": GSTUDIO_RESOURCES_TEXT_COMPLEXITY
+                    # "textcomplexity": GSTUDIO_RESOURCES_TEXT_COMPLEXITY,
+                    "class": ["1","2","3","4","5","6","7","8","9","10","11","12"]
 				}
 
 	# following attr's values need to be get/not in settings:
@@ -3233,7 +3234,10 @@ def get_filters_data(gst_name, group_name_or_id='home'):
 								"value": json.dumps(static_mapping["language"])
 							}
 
-
+        filter_dict["class"] = {
+        "data_type": "basestring", "type": "attribute",
+        "value": json.dumps(static_mapping["class"])
+                }
 	try:
 		filter_parameters.pop(filter_parameters.index('language'))
 	except Exception, e:

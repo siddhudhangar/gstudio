@@ -271,7 +271,7 @@ class Triple(DjangoDocument):
       data_save_into_file = json.dumps(temp,cls=CustomNodeJSONEncoder)
       json_data = json.dumps(temp,cls=NodeJSONEncoder)
       kwargs = json.dumps(kwargs,cls=NodeJSONEncoder)
-      rcs_function.apply_async((is_new,data_save_into_file,json_data,kwargs), countdown=1)
+      #rcs_function.apply_async((is_new,data_save_into_file,json_data,kwargs), countdown=1)
     # self.rcs_function(self,is_new,*args,**kwargs)
 
     # def rcs_function(self,is_new,*args,**kwargs):

@@ -495,6 +495,8 @@ def parse_data_create_gsystem(json_file_path):
 
             # calling method to create File GSystems
             node_obj = create_resource_gsystem(parsed_json_document, i)
+            print("node_obj")
+            print(node_obj)
             nodeid = node_obj._id if node_obj else None
             # print "nodeid : ", nodeid
 
@@ -541,7 +543,7 @@ def parse_data_create_gsystem(json_file_path):
             thumbnail_url = parsed_json_document.get('thumbnail')
             # print "thumbnail_url : ", thumbnail_url
 
-            if (thumbnail_url and nodeid) and (thumbnail_url != parsed_json_document.get('thumbnail') ):
+            if (thumbnail_url and nodeid) or (thumbnail_url != parsed_json_document.get('thumbnail') ):
                 try:
                     info_message = "\n\n- Attaching thumbnail to resource\n"
                     log_print(info_message)
@@ -551,7 +553,9 @@ def parse_data_create_gsystem(json_file_path):
                     print e
 
             # print type(nodeid), "-------", nodeid, "\n"
-            if (thumbnail_url == parsed_json_document.get('resource_link')) and (warehouse_group._id in node_obj.group_set) :
+            print("node")
+            print(node_obj)
+            if (thumbnail_url == parsed_json_document.get('resource_link')) and node_obj and (warehouse_group._id in node_obj.group_set) :
                 for i,each_groupid in enumerate(node_obj.group_set):
                     if each_groupid == warehouse_group._id:
                         node_obj.group_set.pop(i)
@@ -867,10 +871,11 @@ def create_resource_gsystem(resource_data, row_no='', group_set_id=None):
         file_not_found_msg += "- ERROR    : " + str(e) + "\n\n"
         log_file_not_found.append(file_not_found_msg)
         return None
-
+    print(resource_link)
+    print("file----")
     files = io.BytesIO(files.read())
     files.name = filename
-
+    print(files.name)
     name = unicode(resource_data["name"])  # name to be given to gsystem
     userid = resource_data["created_by"]
     # content_org = resource_data["content_org"]
@@ -884,7 +889,7 @@ def create_resource_gsystem(resource_data, row_no='', group_set_id=None):
     img_type = None
     access_policy = None
     usrname = "nroer_team"
-
+    print("files .....lllll")
     files.seek(0)
 
     fh_obj = filehive_collection.collection.Filehive()
@@ -939,8 +944,8 @@ def create_resource_gsystem(resource_data, row_no='', group_set_id=None):
         file_gs_obj.status = u"PUBLISHED"
         file_gs_obj.save(groupid=home_group._id)
 
-        if 'video' in file_gs_obj.if_file.mime_type:
-            convertVideo.delay(nroer_team_id, str(file_gs_obj._id), resource_data["name"])
+        #if 'video' in file_gs_obj.if_file.mime_type:
+        #    convertVideo.delay(nroer_team_id, str(file_gs_obj._id), resource_data["name"])
 
         print "\n\n =================| Printing newly created object |=================\n", file_gs_obj
         print "\n ===================================================================\n\n"

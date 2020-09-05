@@ -536,11 +536,26 @@ Still keeping for future ref (if needed).
           <div class="small-12 large-8 small-centered large-centered columns">
         <div class="panel callout radius" id="metadata_info" style="display: none;">
           <table class="small-12 large-12 large-centered">
-              <caption>Metadata</caption>
-            <tr>
+            <caption>Metadata</caption>
+	    {% for each in node.attribute_set %}
+	      {% if each.timerequired %}
+	      <tr>
               <td width="200">{% trans "Time Required" %}</td>
-              <td width="250">{{node.timerequired | default_if_none:"Not set" | lower}}</td>
-            </tr>
+              <td width="250">{{each.timerequired | default_if_none:"Not set" | lower}}</td>
+	      </tr>
+	      {% elif each.class %}
+              <tr>
+              <td width="200">{% trans "Class" %}</td>
+              <td width="250">{{each.class | default_if_none:"Not set" | lower}}</td>
+	      </tr>
+              {% elif each.learningoutcome %}
+              <tr>
+              <td width="200">{% trans "Learning Outcome" %}</td>
+              <td width="250">{{each.learningoutcome | default_if_none:"Not set" | lower}}</td>
+              </tr>
+	      {% endif %}
+	      
+	    {% endfor %}
             <tr>
               <td width="200">{% trans "Interactivity Type" %}</td>
               <td width="250">{{node.interactivitytype | default_if_none:"Not set" | lower}}</td>
@@ -586,7 +601,6 @@ Still keeping for future ref (if needed).
               <td width="200">{% trans "Age Range" %}</td>
               <td width="250">{{node.age_range | default_if_none:"Not set" | lower}}</td>
             </tr> -->
-
             <tr>
               <td width="200">{% trans "Educational Level" %}</td>
               <td width="250">{{node.educationallevel | join_with_commas | lower}}</td>
@@ -606,7 +620,6 @@ Still keeping for future ref (if needed).
               <td width="200">{% trans "Target Audience" %}</td>
               <td width="250">{{node.audience|join_with_commas|lower }}</td>
             </tr>
-
           </table>
       </div>
       {% endif %}

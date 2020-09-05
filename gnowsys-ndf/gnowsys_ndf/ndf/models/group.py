@@ -148,8 +148,8 @@ class Group(GSystem):
         True -- If user is one of them, from the above specified list of categories.
         False -- If above criteria is not met (doesn't belongs to any of the category, mentioned above)!
         """
-
-        if (user.is_superuser) or (user.id == self.created_by) or (user.id in self.group_admin):
+        print("is_gstaff")
+        if (user.is_superuser) or (user.id == self.created_by):
             return True
         else:
             auth_obj = node_collection.one({'_type': 'Author', 'created_by': user.id})

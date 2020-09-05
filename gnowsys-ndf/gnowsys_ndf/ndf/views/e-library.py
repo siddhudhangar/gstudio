@@ -91,7 +91,7 @@ if GSTUDIO_ELASTIC_SEARCH:
 			group_id = ObjectId(group_id)
 		except:
 			group_name, group_id = get_group_name_id(group_id)
-
+                group_name, group_id = get_group_name_id(group_id)
 		if app_id is None:
 			app_id = app1.hits[0].id
 
@@ -152,7 +152,7 @@ if GSTUDIO_ELASTIC_SEARCH:
 				strconcat1 = strconcat1+'eval(str("'+ value +'")),'
 
 			if search_text in (None,'',""):
-				if GSTUDIO_SITE_NAME == "NROER":
+				if group_name.lower() == "home" and GSTUDIO_SITE_NAME == "NROER":
 					q = eval("Q('bool', must=[Q('match', group_set=str(group_id)), Q('terms',attribute_set__educationaluse=['documents','images','audios','videos','interactives','ebooks']),"+strconcat1[:-1]+"],must_not=[Q('match', attribute_set__educationaluse ='ebooks')],"
 						+"should=[Q('match',member_of=GST_FILE1.hits[0].id),Q('match',member_of=GST_IPAGE1.hits[0].id),Q('match',member_of=GST_JSMOL1.hits[0].id)])")
 				else:
@@ -170,7 +170,7 @@ if GSTUDIO_ELASTIC_SEARCH:
 				q_applications_count = eval("Q('bool', must=[Q('terms',attribute_set__educationaluse=['documents','ebooks']),Q('match', access_policy='public'),Q('match', group_set=str(group_id)),"+strconcat1[:-1]+"],should=[Q('match',member_of=GST_FILE1.hits[0].id),Q('match',member_of=GST_IPAGE1.hits[0].id),Q('match',member_of=GST_JSMOL1.hits[0].id),Q('match',member_of=GST_PAGE1.hits[0].id) ],minimum_should_match=1)")
 				q_ebooks_count = eval("Q('bool', must=[Q('match', attribute_set__educationaluse='ebooks'),Q('match', access_policy='public'),Q('match', group_set=str(group_id)),"+strconcat1[:-1]+"],should=[Q('match',member_of=GST_FILE1.hits[0].id),Q('match',member_of=GST_IPAGE1.hits[0].id),Q('match',member_of=GST_JSMOL1.hits[0].id),Q('match',member_of=GST_PAGE1.hits[0].id) ],minimum_should_match=1)")
 
-				if GSTUDIO_SITE_NAME == "NROER":
+				if group_name.lower() == "home" and GSTUDIO_SITE_NAME == "NROER":
 					q_all_count = eval("Q('bool', must=[Q('match', group_set=str(group_id)), Q('match',access_policy='public'),Q('terms',attribute_set__educationaluse=['documents','images','audios','videos','interactives','ebooks']),"+strconcat1[:-1]+"],"
 										+"should=[Q('match',member_of=GST_FILE1.hits[0].id),Q('match',member_of=GST_JSMOL1.hits[0].id),Q('match',member_of=GST_IPAGE1.hits[0].id),Q('match',member_of=GST_PAGE1.hits[0].id)],"
 										+"minimum_should_match=1)")
@@ -202,7 +202,7 @@ if GSTUDIO_ELASTIC_SEARCH:
 
 		else:
 			if search_text in (None,'',""):
-				if GSTUDIO_SITE_NAME == "NROER":
+				if group_name.lower() == "home" and GSTUDIO_SITE_NAME == "NROER":
 					q = Q('bool', must=[Q('terms',attribute_set__educationaluse=['documents','images','audios','videos','interactives','ebooks']),Q('match', group_set=str(group_id)), Q('match',access_policy='public')],
 						should=[Q('match',member_of=GST_FILE1.hits[0].id),Q('match',member_of=GST_IPAGE1.hits[0].id),Q('match',member_of=GST_JSMOL1.hits[0].id),Q('match',member_of=GST_PAGE1.hits[0].id)],
 						minimum_should_match=1)
@@ -242,7 +242,7 @@ if GSTUDIO_ELASTIC_SEARCH:
 			q_ebooks_count = Q('bool', must=[Q('match', attribute_set__educationaluse='ebooks'),Q('match', access_policy='public'),Q('match', group_set=str(group_id))])
 			#q_all_count=  Q('bool', must=[Q('terms',attribute_set__educationaluse=['documents','images','audios','videos','interactives'])])
 
-			if GSTUDIO_SITE_NAME == "NROER":
+			if group_name.lower() == "home" and GSTUDIO_SITE_NAME == "NROER":
 				q_all_count = Q('bool', must=[Q('terms',attribute_set__educationaluse=['documents','images','audios','videos','interactives','ebooks']),Q('match', group_set=str(group_id)), Q('match',access_policy='public')],
 						should=[Q('match',member_of=GST_FILE1.hits[0].id),Q('match',member_of=GST_IPAGE1.hits[0].id),Q('match',member_of=GST_JSMOL1.hits[0].id),Q('match',member_of=GST_PAGE1.hits[0].id)],
 					    minimum_should_match=1)
@@ -549,7 +549,7 @@ if GSTUDIO_ELASTIC_SEARCH:
 						#q = Q('bool', must=[Q('match', group_set=str(group_id)), Q('match',access_policy='public')],
 						#	should=[Q('match',member_of=GST_FILE1.hits[0].id),Q('match',member_of=GST_PAGE1.hits[0].id),Q('match',member_of=GST_JSMOL1.hits[0].id)],
 						#	must_not=[Q('match', attribute_set__educationaluse ='ebooks')],minimum_should_match=1)
-						if GSTUDIO_SITE_NAME == "NROER":
+						if group_name.lower() == "home" and GSTUDIO_SITE_NAME == "NROER":
 							q = eval("Q('bool', must=[Q('match', group_set=str(group_id)),Q('terms',attribute_set__educationaluse=['documents','images','audios','videos','interactives','ebooks']),"+strconcat1[:-1]+"],"
 								+"should=[Q('match',member_of=GST_FILE1.hits[0].id),Q('match',member_of=GST_JSMOL1.hits[0].id),Q('match',member_of=GST_IPAGE1.hits[0].id),Q('match',member_of=GST_PAGE1.hits[0].id)],"
 								+"minimum_should_match=1)")
@@ -582,7 +582,7 @@ if GSTUDIO_ELASTIC_SEARCH:
 
 				else:
 					if filetype == "all":
-						if GSTUDIO_SITE_NAME == "NROER":
+						if group_name.lower() == "home" and GSTUDIO_SITE_NAME == "NROER":
 							q = Q('bool', must=[Q('terms',attribute_set__educationaluse=['documents','images','audios','videos','interactives','ebooks']),Q('match', group_set=str(group_id)), Q('match',access_policy='public')],
 								should=[Q('match',member_of=GST_FILE1.hits[0].id),Q('match',member_of=GST_IPAGE1.hits[0].id),Q('match',member_of=GST_JSMOL1.hits[0].id),Q('match',member_of=GST_PAGE1.hits[0].id)],
 								minimum_should_match=1)

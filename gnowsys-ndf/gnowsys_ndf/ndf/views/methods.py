@@ -142,14 +142,14 @@ def get_execution_time(f):
             funct_name=f.func_name
             time_taken=unicode(str(time2 - time1))
             locale=locale
-            record_in_benchmark.apply_async((kwargs_len,total_param_size,post_bool,
-                                get_bool,
-                                sessionid,
-                                user_name,
-                                path,
-                                funct_name,
-                                time_taken,
-                                locale), countdown=1)
+            #record_in_benchmark.apply_async((kwargs_len,total_param_size,post_bool,
+            #                    get_bool,
+            #                    sessionid,
+            #                    user_name,
+            #                    path,
+            #                    funct_name,
+            #                    time_taken,
+            #                    locale), countdown=1)
 
         return ret
     return wrap
@@ -5389,6 +5389,7 @@ def get_filter_querydict(filters):
     """
     query_dict = []
     for each in filters:
+          print(each)
           temp_list = []
           filter_grp = each["or"]
           for each_filter in filter_grp:
